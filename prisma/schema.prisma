@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Barber {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  password  String
+  role      String   @default("barbero")
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id    String @id @default(cuid())
+  name  String
+  price Int
+}
+
+model Cut {
+  id          String   @id @default(cuid())
+  date        String
+  barberId    String
+  barberName  String
+  client      String
+  serviceId   String
+  serviceName String
+  price       Int
+  notes       String?
+  createdAt   DateTime @default(now())
+}
