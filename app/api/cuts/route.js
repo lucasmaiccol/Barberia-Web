@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { getSessionFromRequest } from '../../../lib/auth';
 
 export async function GET() {
   const cuts = await prisma.cut.findMany({ orderBy: { date: 'desc' } });
@@ -7,6 +8,11 @@ export async function GET() {
 }
 
 export async function POST(req) {
+  const session = await getSessionFromRequest(req);
+  if (session?.role === 'demo') {
+    return NextResponse.json({ error: 'Cuenta demo: esta acción está deshabilitada' }, { status: 403 });
+  }
+
   const body = await req.json();
   const { date, barberId, barberName, client, serviceId, serviceName, price, notes } = body;
 

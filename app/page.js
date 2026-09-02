@@ -36,6 +36,9 @@ async function api(path, options) {
   }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    if (res.status === 403) {
+      window.alert(body.error || 'No tenés permiso para hacer esto.');
+    }
     throw new Error(body.error || 'Error de red');
   }
   return res.json();

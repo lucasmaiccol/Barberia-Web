@@ -24,6 +24,17 @@ async function main() {
     console.log('El usuario "admin" fue actualizado a rol de dueño.');
   }
 
+  const existingDemo = await prisma.barber.findUnique({ where: { username: 'demo' } });
+  if (!existingDemo) {
+    const hashedDemo = await bcrypt.hash('demo123', 10);
+    await prisma.barber.create({
+      data: { name: 'Demo', username: 'demo', password: hashedDemo, role: 'demo' },
+    });
+    console.log('Demo user created -> username: demo / password: demo123 (read-only, cannot add/edit/delete)');
+  } else {
+    console.log('El usuario "demo" ya existe, no se creó de nuevo.');
+  }
+
   const existingServices = await prisma.service.count();
   if (existingServices === 0) {
     await prisma.service.createMany({
